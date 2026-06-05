@@ -94,9 +94,56 @@ void add_after_curr(Playlist* playlist, Track track) {
 	printf("New track %s is added to playlist after curr one", track.name);
 }
 
-void del(Playlist* playlist) {
-	
-}
+	void delete_from_start() {
+
+		if (head == nullptr) {
+			cout << "Playlist is empty!" << endl;
+			return;
+		}
+
+		Node* ptr_del = head;
+		string del_name = ptr_del->data.get_name();
+
+		head = head->next;
+
+		if (head != nullptr) {
+			head->pre = nullptr;
+		}
+		else {
+			tail = nullptr;  
+			curr = nullptr;
+		}
+		if (ptr_del == curr) {
+			curr = head;
+		}
+		delete ptr_del;
+		size--;
+		cout << "Track \"" << del_name << "\" was successfully deleted from start!" << endl;
+		cout << endl;
+	}
+
+	void del_from_end() {
+		if (tail == nullptr) {
+			cout << "Playlist is empty!" << endl;
+			return;
+		}
+
+		Node* ptr_del = tail;
+		string del_name = ptr_del->data.get_name();
+		tail = tail->pre;
+
+		if (tail != nullptr) {
+			tail->next = nullptr;
+		}
+		else { head = nullptr; }
+		if (ptr_del == curr) {
+			curr =tail;
+		}
+		delete ptr_del;
+		size--;
+		cout << "Track \"" << del_name << "\" was successfully deleted from end!" << endl;
+		cout << endl;
+	}
 
 void shuffle() {
 		if (size <= 1) {
@@ -116,8 +163,60 @@ void shuffle() {
 			curr = curr->next;
 		}
 	}
-void repeat_one() {}
 
-void repeat_all() {}
+	void settings_mode() {
+		int mode;
+		cout << "Choose the mode: " << endl << "1. No Repeat   2. One track repeat   3. All tracks repeat   ";
+		cin >> mode;
+		switch (mode) {
+		case 1: {
+			repmode = no_rep;
+			cout << "Repeat mode: OFF" << endl;
+			break;
+		}
+		case 2: {
+			repmode = one_rep;
+			cout << "Repeat mode: One track" << endl;
+			break;
+		}
+		case 3: {
+			repmode = all_rep;
+			cout << "Repeat mode: All tracks" << endl;
+			break;
+		}
+		}
+	}
+
+	Node* next_to_play() {
+		if (curr == nullptr) { return nullptr; }
+		switch (repmode) {
+		case no_rep: 
+		case one_rep: { return curr;}
+		case all_rep:{
+			if (curr->next == nullptr) {
+				cout << "Repeating playlist from start";
+				return head;
+			}
+			return curr->next;
+		}
+		}
+		return curr->next;
+	}
+
+	void get_rep_info() {
+		Node* next_one = next_to_play();
+		cout << "Now playing:" << endl;
+		curr->data.print_info();
+
+		if (repmode != one_rep) curr->next = next_one;
+
+		if (repmode == one_rep) {
+			cout << "Repeating this track" << endl;
+		}
+		else if (repmode == all_rep && curr->next == nullptr) {
+			cout << "Last track - will loop to start" << endl;
+		}
+	}
+
 
 
