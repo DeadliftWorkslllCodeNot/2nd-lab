@@ -1,7 +1,7 @@
 ﻿#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-typedef struct { //струкртура трека
+typedef struct { 
 	char name[50];
 	int duration;
 	char genre[50];
@@ -98,16 +98,26 @@ void del(Playlist* playlist) {
 	
 }
 
-void shuffle() {}
-
+void shuffle() {
+		if (size <= 1) {
+			cout << "Only one track in Playlist!" << endl;
+			return;
+		}
+		Node* curr = head;
+		while (curr!=nullptr) {
+			Node* randomtr = head;
+			int rand_idx = rand() % size;
+			for (int i = 0; i < rand_idx; i++) {
+				randomtr = randomtr->next;
+			}
+			Track temp = curr->data;
+			curr->data = randomtr->data;
+			randomtr->data = temp;
+			curr = curr->next;
+		}
+	}
 void repeat_one() {}
 
 void repeat_all() {}
 
-void main() {
 
-}
-/*Добавление трека
-Удаление трека
-Перемешивание(shuffle)
-Повтор(repeat one / repeat all)*/
